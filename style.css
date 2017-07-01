@@ -16,3 +16,10 @@ circle{
     margin-left: auto;
     margin-right: auto;
 }
+line{
+    stroke: darkslategray;
+}
+text{
+    fill:black;
+    text-anchor: end;
+}

@@ -62,8 +62,8 @@ function callback(Data){
         .on('mouseover',function(d,i){
 
             tooltip.style.display="block";
-
-            tooltip.innerHTML=d.Name + ' : '+d.Nationality+"<br/>Time: "+d.Time+"<p>"+d.Doping+'</p>';
+            if(d.Doping) tooltip.innerHTML=d.Name + ' : '+d.Nationality+"<br/>Doping: True"+"<br/>Time: "+d.Time+"<p>"+d.Doping+'</p>';
+            else tooltip.innerHTML=d.Name + ' : '+d.Nationality+"<br/>Doping: False"+"<br/>Time: "+d.Time;
 
             tooltip.style.top=65+parseInt(scaleY(d.Place),10) + 'px';
             if(window.innerWidth>1000) tooltip.style.left=50+parseInt(scaleX(dataTime[i]),10)+ (window.innerWidth-1000)/2 + 'px';
@@ -107,7 +107,7 @@ function callback(Data){
         .style('text-anchor','middle')
         .text(function(d){return d})
         .attr('x',function(d){return parseInt(scaleX(dataTime[0]+parseInt(d[0],10)*60),10)+104;})
-        .attr('y',474);
+        .attr('y',470);
     
     axes
         .select('#g2')
@@ -119,6 +119,28 @@ function callback(Data){
         .attr('x2',function(d){return parseInt(scaleX(dataTime[0]+parseInt(d[0],10)*60),10)+104;})
         .attr('y1',452)
         .attr('y2',460);
+    
+    axes
+      .append('text')
+        .text('Minutes Behind Fastest Time')
+        .style('text-anchor','middle')
+        .attr('x',500)
+        .attr('y',486)
+
+    axes
+      .append('text')
+        .text('Ranking')
+        .style('text-anchor','middle')
+        .style('writing-mode','tb')
+        .attr('x',110)
+        .attr('y',90)
+
+    axes
+      .append('text')
+        .text("Doping in Professional Bicycle Racing - 35 Fastest times up Alpe d'Huez")
+        .style('text-anchor','middle')
+        .attr('x',500)
+        .attr('y',30)
 }
 axios.get('https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/cyclist-data.json')
     .then(callback)

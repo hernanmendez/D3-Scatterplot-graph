@@ -1,25 +1,29 @@
 function callback(Data){
     Data=Data.data;
-
+    //setting the svg
     d3.select('#app')
       .append('svg')
         .attr('width',1000)
         .attr('height',500)
+    //setting the group .graph
       .append('g')
         .attr('width',800)
         .attr('height',400)
         .attr('transform','translate(100,50)')
         .attr('class','graph');
     
+    //setting .axes
     d3.select('svg')
       .append('g')
         .attr('class','axes')
+    //setting the axes lines
       .append('line')
         .attr('x1',99)
         .attr('x2',99)
         .attr('y1',49)
         .attr('y2',450);
     
+
     d3.select('.axes')
       .append('line')
         .attr('x1',99)
@@ -27,6 +31,7 @@ function callback(Data){
         .attr('y1',450)
         .attr('y2',450);
     
+    //setting 2 groups on the axes
     d3.select('.axes')
       .append('g')
         .attr('id','g1')
@@ -34,24 +39,28 @@ function callback(Data){
     d3.select('.axes')
       .append('g')
         .attr('id','g2')
-
+    
+    //setting some variables
     var graph = d3.select('.graph');
     var height = 400;
     var width = 800;
     var axes = d3.select('.axes');
     var tooltip = document.getElementById('tooltip');
 
+    //scaling function for Y
     var scaleY = d3.scaleLinear()
         .domain([1,35])
         .range([0,height-10])
     
-    
+    //setting an array with the times in seconds
     var dataTime = Data.map(function(info){return (parseInt(info.Time.slice(0,2))*60 + parseInt(info.Time[3]+info.Time[4]))});
     
+    //scaling function for X
     var scaleX = d3.scaleLinear()
         .domain([d3.max(dataTime)+60,d3.min(dataTime)])
         .range([10,width])
         
+        //setting the circles
     d3.select('.graph')
         .selectAll('circle')
         .data(Data)
@@ -62,6 +71,7 @@ function callback(Data){
         .on('mouseover',function(d,i){
 
             tooltip.style.display="block";
+            //if the doping is true the tooltip will show it
             if(d.Doping) tooltip.innerHTML=d.Name + ' : '+d.Nationality+"<br/>Doping: True"+"<br/>Time: "+d.Time+"<p>"+d.Doping+'</p>';
             else tooltip.innerHTML=d.Name + ' : '+d.Nationality+"<br/>Doping: False"+"<br/>Time: "+d.Time;
 
@@ -73,10 +83,13 @@ function callback(Data){
         .on('mouseout',function(){
             tooltip.style.display='none';
         })
-        .style('fill',function(d){if(d.Doping)return 'red'; return 'grey'});
+        //if doping is true the circle color will be red, otherwise, will be gray
+        .style('fill',function(d){if(d.Doping)return 'red'; return 'gray'});
 
+    //setting variable with the reference values for Ranking
     var nums=[1,5,10,15,20,25,30,35];
 
+    //Adding axes
     axes
         .select('#g1')
         .selectAll('g')
@@ -119,7 +132,8 @@ function callback(Data){
         .attr('x2',function(d){return parseInt(scaleX(dataTime[0]+parseInt(d[0],10)*60),10)+104;})
         .attr('y1',452)
         .attr('y2',460);
-    
+
+    //Adding Text
     axes
       .append('text')
         .text('Minutes Behind Fastest Time')
@@ -142,5 +156,6 @@ function callback(Data){
         .attr('x',500)
         .attr('y',30)
 }
+//Calling the URL to get the Data
 axios.get('https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/cyclist-data.json')
     .then(callback)
